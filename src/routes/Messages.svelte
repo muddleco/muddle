@@ -1,0 +1,40 @@
+<script lang="ts">
+	import { slide } from 'svelte/transition';
+	import dayjs from 'dayjs';
+	import relativeTime from 'dayjs/plugin/relativeTime';
+	dayjs.extend(relativeTime);
+
+	export let messages: any;
+	export let hoverMessage;
+	export let showMessage;
+	export let selectedMessage;
+</script>
+
+<div transition:slide>
+	{#each messages as message}
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<!-- svelte-ignore a11y-mouse-events-have-key-events -->
+		<div
+			class="group hover:bg-gray-50 px-5 py-2 text-xs flex"
+			on:mouseover={() => (hoverMessage = message)}
+			on:click={() => {
+				selectedMessage = message;
+				showMessage = true;
+			}}
+		>
+			{#if message.headers.from.includes('<')}
+				<span class="font-medium w-2/12">{message.headers.from.split('<')[0]}</span>
+			{:else}
+				<span class="font-medium w-2/12">{message.headers.from.split('@')[0]}</span>
+			{/if}
+			<div class="w-9/12 whitespace-nowrap overflow-hidden overflow-ellipsis">
+				<span>{message.headers.subject}</span>
+				<span class="ml-2 text-gray-500">{message.snippet}</span>
+			</div>
+			<div class="w-1/12 text-right text-gray-300">
+				<div class="hidden group-hover:block">Actions</div>
+				<span class="group-hover:hidden">{dayjs(message.headers.date).fromNow()}</span>
+			</div>
+		</div>
+	{/each}
+</div>
