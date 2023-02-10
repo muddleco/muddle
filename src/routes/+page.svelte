@@ -12,7 +12,7 @@
 
 	export let data: PageData;
 
-	console.log(data.messages);
+	// console.log(data.messages);
 
 	const messages = data.messages.filter((message: any) => message.labelIds.includes('INBOX'));
 
@@ -46,7 +46,7 @@
 	}
 
 	setInterval(() => {
-		if (data.events && data.events[0].start) {
+		if (data.events && data.events[0] && data.events[0].start) {
 			nextEvent.summary = data.events[0].summary;
 			nextEvent.time = dayjs().to(data.events[0].start.dateTime);
 		}
