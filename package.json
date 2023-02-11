@@ -51,6 +51,7 @@
 		"gmail-api-parse-message": "^2.1.2",
 		"googleapis": "^110.0.0",
 		"hotkeys-js": "^3.10.1",
+		"meilisearch": "^0.31.1",
 		"svelte-editorjs": "^0.1.0"
 	}
 }

@@ -12,9 +12,21 @@
 
 	export let data: PageData;
 
-	// console.log(data.messages);
+	const token = async () => {
+		const res = await fetch('http://localhost:5173/api/token', { method: 'POST' });
+		const json = await res.json();
+		console.log(json);
+	};
 
-	const messages = data.messages.filter((message: any) => message.labelIds.includes('INBOX'));
+	const sync = async () => {
+		const res = await fetch('http://localhost:5173/api/sync', { method: 'POST' });
+		const json = await res.json();
+		console.log(json);
+	};
+
+	const messages = data.messages.filter(
+		(message: any) => message.labels && message.labels.includes('INBOX')
+	);
 
 	let hoverMessage = messages[-0];
 	let showMessage = false;
@@ -36,8 +48,8 @@
 	};
 
 	let nextEvent = {
-		summary: "",
-		time: ""
+		summary: '',
+		time: ''
 	};
 
 	if (data.events && data.events[0]) {
@@ -50,11 +62,11 @@
 			nextEvent.summary = data.events[0].summary;
 			nextEvent.time = dayjs().to(data.events[0].start.dateTime);
 		}
-	}, 60000)
+	}, 60000);
 </script>
 
 <svelte:head>
-	<title>{showMessage ? selectedMessage?.headers.subject : 'Inbox'} | Muddle</title>
+	<title>{showMessage ? selectedMessage?.subject : 'Inbox'} | Muddle</title>
 </svelte:head>
 <Navbar
 	items={[
@@ -64,7 +76,7 @@
 	]}
 />
 <div class="flex h-screen pt-12">
-	<div class="w-3/4 pt-4">
+	<div class="w-3/4 pt-4 overflow-y-scroll">
 		{#if showMessage}
 			<Message {messages} bind:showMessage bind:message={selectedMessage} bind:selectedMessage />
 		{:else}
@@ -75,17 +87,17 @@
 		<div class="flex">
 			<div class="bg-pink-200 w-11 h-11 rounded-full mr-3" />
 			<div class="-mt-0.5">
-				{#if hoverMessage.headers.from.includes('<')}
-					<h2 class="text-xl text-gray-800">{hoverMessage.headers.from.split('<')[0]}</h2>
+				{#if hoverMessage.from.includes('<')}
+					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('<')[0]}</h2>
 				{:else}
-					<h2 class="text-xl text-gray-800">{hoverMessage.headers.from.split('@')[0]}</h2>
+					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('@')[0]}</h2>
 				{/if}
-				{#if hoverMessage.headers.from.includes('<')}
+				{#if hoverMessage.from.includes('<')}
 					<p class="text-gray-500 text-xs">
-						{hoverMessage.headers.from.split('<')[1].replace('>', '')}
+						{hoverMessage.from.split('<')[1].replace('>', '')}
 					</p>
 				{:else}
-					<p class="text-gray-500 text-xs">{hoverMessage.headers.from}</p>
+					<p class="text-gray-500 text-xs">{hoverMessage.from}</p>
 				{/if}
 			</div>
 		</div>
@@ -104,13 +116,13 @@
 			</div>
 			<div class="text-gray-400 text-xs space-y-2">
 				{#each messages as message}
-					{#if message.headers.from === hoverMessage.headers.from && message.id !== hoverMessage.id}
-					<div class="flex">
-						<span class="w-3/4">{message.headers.subject}</span>
-						<span class="w-1/4 text-right text-gray-300 text-xs">
-							{dayjs(message.internalDate).fromNow()}
-						</span>
-					</div>
+					{#if message.from === hoverMessage.from && message.id !== hoverMessage.id}
+						<div class="flex">
+							<span class="w-3/4">{message.subject}</span>
+							<span class="w-1/4 text-right text-gray-300 text-xs">
+								{dayjs(message.date).fromNow()}
+							</span>
+						</div>
 					{/if}
 				{/each}
 			</div>
@@ -137,13 +149,35 @@
 		</div>
 		<div class="absolute bottom-5 space-y-2">
 			{#each messages as message}
-				{#if message.labelIds.includes('STARRED')}
-					<div class="bg-white rounded-sm border border-gray-200 text-gray-500 text-sm px-4 py-2 flex"><Icon icon="tabler:star" class="h-4 w-4 text-yellow-400 mr-4 mt-0.5" />{message.headers.subject}</div>
+				{#if message.labels.includes('STARRED')}
+					<div
+						class="bg-white rounded-sm border border-gray-200 text-gray-500 text-sm px-4 py-2 flex"
+					>
+						<Icon icon="tabler:star" class="h-4 w-4 text-yellow-400 mr-4 mt-0.5" />{message.subject}
+					</div>
 				{/if}
 			{/each}
 			{#if data.events && data.events.length > 0}
-				<div class="bg-white rounded-sm border border-gray-200 text-gray-500 text-sm px-4 py-2 flex"><Icon icon="tabler:calendar" class="h-4 w-4 text-gray-400 mr-4 mt-0.5" />Your next event is {nextEvent.summary} in {nextEvent.time}</div>
+				<div
+					class="bg-white rounded-sm border border-gray-200 text-gray-500 text-sm px-4 py-2 flex"
+				>
+					<Icon icon="tabler:calendar" class="h-4 w-4 text-gray-400 mr-4 mt-0.5" />Your next event
+					is {nextEvent.summary} in {nextEvent.time}
+				</div>
 			{/if}
 		</div>
 	</div>
 </div>
+
+<style>
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.overflow-y-scroll::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Hide scrollbar for IE, Edge and Firefox */
+	.overflow-y-scroll {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+</style>

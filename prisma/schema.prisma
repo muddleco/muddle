@@ -16,6 +16,7 @@ model User {
 enum Service {
   GOOGLE
   MICROSOFT
+  SEARCH
 }
 
 model App {

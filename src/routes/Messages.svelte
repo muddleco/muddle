@@ -22,18 +22,18 @@
 				showMessage = true;
 			}}
 		>
-			{#if message.headers.from.includes('<')}
-				<span class="font-medium w-2/12">{message.headers.from.split('<')[0]}</span>
+			{#if message.from.includes('<')}
+				<span class="font-medium w-2/12">{message.from.split('<')[0]}</span>
 			{:else}
-				<span class="font-medium w-2/12">{message.headers.from.split('@')[0]}</span>
+				<span class="font-medium w-2/12">{message.from.split('@')[0]}</span>
 			{/if}
 			<div class="w-9/12 whitespace-nowrap overflow-hidden overflow-ellipsis">
-				<span>{message.headers.subject}</span>
+				<span>{message.subject}</span>
 				<span class="ml-2 text-gray-500">{message.snippet}</span>
 			</div>
 			<div class="w-1/12 text-right text-gray-300">
 				<div class="hidden group-hover:block">Actions</div>
-				<span class="group-hover:hidden">{dayjs(message.headers.date).fromNow()}</span>
+				<span class="group-hover:hidden">{dayjs(message.date).fromNow()}</span>
 			</div>
 		</div>
 	{/each}
