@@ -11,8 +11,8 @@
 			class="flex w-full items-center justify-between border-b border-gray-500 py-2 lg:border-none"
 		>
 			<div class="flex items-center">
-				<a href="/" class="pt-0.5">
-					<span class="font-lexend text-gray-700 text-xl">muddle</span>
+				<a href="/" class="pt-1">
+					<img class="h-6" src="logo.svg" alt="Muddle Logo" />
 				</a>
 				<div class="ml-6 hidden space-x-5 lg:block">
 					{#each items as item}
