@@ -1,6 +1,9 @@
 <script lang="ts">
-	import Button from '$lib/Button.svelte';
+	import Icon from '@iconify/svelte';
 	export let items: Array<{ title: string; link: string }> = [];
+	export let query: any;
+	export let handleInput: any;
+	export let handleSearch: any;
 </script>
 
 <header
@@ -22,11 +25,27 @@
 					{/each}
 				</div>
 			</div>
-			<div class="ml-10 space-x-2">
+			<div class="ml-10 space-x-4 flex">
+				<div class="flex">
+					<form on:submit={(e) => { e.preventDefault(); handleSearch();}}>
+						<input
+							class="bg-gray-50 border-b border-gray-200 focus:outline-none focus:border-gray-400 mr-2 text-sm"
+							type="text"
+							bind:value={query}
+							on:input={handleInput}
+							placeholder="Search for anything"
+						/>
+						<button class="mt-1.5" on:click={handleSearch}
+							><Icon icon="tabler:search" class="h-4 w-4 text-gray-600" /></button
+						>
+					</form>
+				</div>
 				<a href="/new">
-					<Button text="New" type="secondary" size="sm" />
+					<Icon icon="tabler:pencil" class="h-4 w-4 mt-1.5 text-gray-600" />
 				</a>
-				<Button text="Bailey Pumfleet" type="secondary" size="sm" />
+				<a href="/">
+					<Icon icon="tabler:user" class="h-4 w-4 mt-1.5 text-gray-600" />
+				</a>
 			</div>
 		</div>
 		<div class="flex flex-wrap justify-center gap-x-6 py-4 lg:hidden">

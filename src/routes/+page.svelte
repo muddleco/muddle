@@ -12,6 +12,21 @@
 
 	export let data: PageData;
 
+	let query = '';
+	let results: any = [];
+
+	const handleSearch = () => {
+		fetch(`http://localhost:5173/api/search?query=${query}`)
+			.then((response) => response.json())
+			.then((data) => {
+				results = data.messages.filter((message: any) => message.labels && message.labels.includes('INBOX'));
+			});
+	};
+
+	const handleInput = (event: any) => {
+		query = event.target.value;
+	};
+
 	const token = async () => {
 		const res = await fetch('http://localhost:5173/api/token', { method: 'POST' });
 		const json = await res.json();
@@ -74,11 +89,16 @@
 		{ title: 'Important', link: '?important' },
 		{ title: 'Team', link: '/team' }
 	]}
+	query={query}
+	handleInput={handleInput}
+	handleSearch={handleSearch}
 />
 <div class="flex h-screen pt-12">
 	<div class="w-3/4 pt-4 overflow-y-scroll">
 		{#if showMessage}
 			<Message {messages} bind:showMessage bind:message={selectedMessage} bind:selectedMessage />
+		{:else if results.length > 0}
+			<Messages bind:messages={results} bind:showMessage bind:hoverMessage bind:selectedMessage />
 		{:else}
 			<Messages {messages} bind:showMessage bind:hoverMessage bind:selectedMessage />
 		{/if}
@@ -150,8 +170,15 @@
 		<div class="absolute bottom-5 space-y-2">
 			{#each messages as message}
 				{#if message.labels.includes('STARRED')}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
+					<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 					<div
 						class="bg-white rounded-sm border border-gray-200 text-gray-500 text-sm px-4 py-2 flex"
+						on:mouseover={() => (hoverMessage = message)}
+						on:click={() => {
+							selectedMessage = message;
+							showMessage = true;
+						}}
 					>
 						<Icon icon="tabler:star" class="h-4 w-4 text-yellow-400 mr-4 mt-0.5" />{message.subject}
 					</div>
