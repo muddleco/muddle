@@ -17,5 +17,5 @@ export const load = (async () => {
 
 	const messages = await client.index('messages').search("", {limit: 100});
 
-	return {messages: messages.hits};
+	return {messages: messages.hits.sort((a, b) => new Date(b.date) - new Date(a.date))};
 }) satisfies PageServerLoad;
