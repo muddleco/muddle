@@ -24,7 +24,7 @@
 				}}
 			>
 				{#if message.from.includes('<')}
-					<span class="font-medium w-2/12">{message.from.split('<')[0]}</span>
+					<span class="font-medium w-2/12">{message.from.split('<')[0].replaceAll("\"", "")}</span>
 				{:else}
 					<span class="font-medium w-2/12">{message.from.split('@')[0]}</span>
 				{/if}

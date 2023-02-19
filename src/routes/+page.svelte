@@ -108,7 +108,7 @@
 			<div class="bg-pink-200 w-11 h-11 rounded-full mr-3" />
 			<div class="-mt-0.5">
 				{#if hoverMessage.from.includes('<')}
-					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('<')[0]}</h2>
+					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('<')[0].replaceAll("\"", "")}</h2>
 				{:else}
 					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('@')[0]}</h2>
 				{/if}
