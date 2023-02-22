@@ -201,7 +201,7 @@
 			</div>
 		</div>
 		<div class="mt-8">
-			{#if extractDomainFromEmail(hoverMessage.from.split('<')[1].replace('>', ''))}
+			{#if hoverMessage.from.split('<')[1] && extractDomainFromEmail(hoverMessage.from.split('<')[1].replace('>', ''))}
 				<div class="flex">
 					<Icon icon="tabler:link" class="h-4 w-4 text-gray-400 mr-2" />
 					<span class="text-sm text-gray-700 -mt-0.5"
