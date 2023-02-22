@@ -19,7 +19,9 @@
 		fetch(`http://localhost:5173/api/search?query=${query}`)
 			.then((response) => response.json())
 			.then((data) => {
-				results = data.messages.filter((message: any) => message.labels && message.labels.includes('INBOX'));
+				results = data.messages.filter(
+					(message: any) => message.labels && message.labels.includes('INBOX')
+				);
 			});
 	};
 
@@ -78,6 +80,35 @@
 			nextEvent.time = dayjs().to(data.events[0].start.dateTime);
 		}
 	}, 60000);
+
+	const popularEmailDomains = [
+		'gmail.com',
+		'yahoo.com',
+		'hotmail.com',
+		'outlook.com',
+		'aol.com',
+		'icloud.com',
+		'live.com',
+		'comcast.net',
+		'msn.com',
+		'verizon.net',
+		'me.com',
+		'att.net',
+		'mac.com',
+		'mail.com'
+	];
+
+	function extractDomainFromEmail(email: string): string | null {
+		const atIndex = email.indexOf('@');
+		if (atIndex === -1) {
+			return null; // email is invalid
+		}
+		const domain = email.slice(atIndex + 1);
+		if (popularEmailDomains.includes(domain)) {
+			return null; // email domain is a popular consumer email service
+		}
+		return domain; // email domain is not a popular consumer email service
+	}
 </script>
 
 <svelte:head>
@@ -89,9 +120,9 @@
 		{ title: 'Important', link: '?important' },
 		{ title: 'Team', link: '/team' }
 	]}
-	query={query}
-	handleInput={handleInput}
-	handleSearch={handleSearch}
+	{query}
+	{handleInput}
+	{handleSearch}
 />
 <div class="flex h-screen pt-12">
 	<div class="w-3/4 pt-4 overflow-y-scroll">
@@ -108,7 +139,9 @@
 			<div class="bg-pink-200 w-11 h-11 rounded-full mr-3" />
 			<div class="-mt-0.5">
 				{#if hoverMessage.from.includes('<')}
-					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('<')[0].replaceAll("\"", "")}</h2>
+					<h2 class="text-xl text-gray-800">
+						{hoverMessage.from.split('<')[0].replaceAll('"', '')}
+					</h2>
 				{:else}
 					<h2 class="text-xl text-gray-800">{hoverMessage.from.split('@')[0]}</h2>
 				{/if}
@@ -166,6 +199,16 @@
 					<span class="w-1/4 text-right text-gray-300 text-xs">in 2 weeks</span>
 				</div>
 			</div>
+		</div>
+		<div class="mt-8">
+			{#if extractDomainFromEmail(hoverMessage.from.split('<')[1].replace('>', ''))}
+				<div class="flex">
+					<Icon icon="tabler:link" class="h-4 w-4 text-gray-400 mr-2" />
+					<span class="text-sm text-gray-700 -mt-0.5"
+						>{extractDomainFromEmail(hoverMessage.from.split('<')[1].replace('>', ''))}</span
+					>
+				</div>
+			{/if}
 		</div>
 		<div class="absolute bottom-5 space-y-2">
 			{#each messages as message}
