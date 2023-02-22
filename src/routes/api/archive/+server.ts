@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import { MeiliSearch } from 'meilisearch';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
@@ -8,6 +9,11 @@ const oAuth2Client = new google.auth.OAuth2(
 	process.env.GOOGLE_CLIENT_SECRET,
 	`${process.env.BASE_URL}/api/gmail`
 );
+
+const client = new MeiliSearch({
+	host: process.env.MEILISEARCH_HOST || '',
+	apiKey: process.env.MEILISEARCH_API_KEY || ''
+});
 
 export const POST = async ({ url }) => {
 	// Get the message ID from the query parameters
@@ -37,6 +43,16 @@ export const POST = async ({ url }) => {
 			resource: {
 				removeLabelIds: ['INBOX']
 			}
+		});
+		const readMessage = await client.index('messages').search(message);
+		const labels = readMessage.hits[0].labels;
+		const unreadIndex = labels.indexOf('INBOX');
+		if (unreadIndex !== -1) {
+			labels.splice(unreadIndex, 1);
+		}
+		await client.index('messages').updateDocuments({
+			id: readMessage.hits[0].id,
+			labels: labels
 		});
 		return new Response(JSON.stringify({ message: 'Success' }));
 	} catch (err) {
