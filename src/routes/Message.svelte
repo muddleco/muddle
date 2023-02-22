@@ -8,6 +8,7 @@
 	import { slide } from 'svelte/transition';
 	import hotkeys from 'hotkeys-js';
 	import { onMount } from 'svelte';
+	import { invalidate } from '$app/navigation';
 
 	let toggleReply = false;
 
@@ -49,12 +50,22 @@
 			showMessage = false;
 		}
 	};
+
+	const readMessage = async () => {
+		const res = await fetch('http://localhost:5173/api/read?message=' + selectedMessage.id, {
+			method: 'POST'
+		});
+	};
+
+	if (message.labels.includes('UNREAD')) {
+		readMessage();
+	}
 </script>
 
 <div class="relative py-2 h-dynamic" transition:slide>
 	<div class="flex px-5 mb-5">
 		<div class="flex w-3/4">
-			<button on:click={() => {showMessage = false; selectedMessage = null;}} class="mr-2">
+			<button on:click={() => {showMessage = false; selectedMessage = null; invalidate("");}} class="mr-2">
 				<Icon icon="tabler:arrow-left" class="h-5 w-5 text-gray-400" />
 			</button>
 			<h1 class="text-2xl font-gray-800">{message.subject}</h1>
