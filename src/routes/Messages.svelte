@@ -24,6 +24,9 @@
 				}}
 			>
 				{#if message.from.includes('<')}
+					{#if message.labels.includes('UNREAD')}
+						<div class="w-1.5 h-1.5 mt-1 -ml-3 mr-2 rounded-full bg-pink-500"></div>
+					{/if}
 					<span class="font-medium w-2/12">{message.from.split('<')[0].replaceAll("\"", "")}</span>
 				{:else}
 					<span class="font-medium w-2/12">{message.from.split('@')[0]}</span>
