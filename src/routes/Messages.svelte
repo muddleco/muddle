@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
+	import {decode} from 'html-entities';
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	dayjs.extend(relativeTime);
@@ -33,7 +34,7 @@
 				{/if}
 				<div class="w-9/12 whitespace-nowrap overflow-hidden overflow-ellipsis">
 					<span>{message.subject}</span>
-					<span class="ml-2 text-gray-500">{message.snippet}</span>
+					<span class="ml-2 text-gray-500">{decode(message.snippet)}</span>
 				</div>
 				<div class="w-1/12 text-right text-gray-300">
 					<div class="hidden group-hover:block">Actions</div>

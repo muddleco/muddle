@@ -19,6 +19,7 @@ specifiers:
   gmail-api-parse-message: ^2.1.2
   googleapis: ^110.0.0
   hotkeys-js: ^3.10.1
+  html-entities: ^2.3.3
   meilisearch: ^0.31.1
   postcss: ^8.4.14
   postcss-load-config: ^4.0.1
@@ -42,6 +43,7 @@ dependencies:
   gmail-api-parse-message: 2.1.2
   googleapis: 110.0.0
   hotkeys-js: 3.10.1
+  html-entities: 2.3.3
   meilisearch: 0.31.1
 
 devDependencies:
@@ -1453,6 +1455,10 @@ packages:
 
   /hotkeys-js/3.10.1:
     resolution: {integrity: sha512-mshqjgTqx8ee0qryHvRgZaZDxTwxam/2yTQmQlqAWS3+twnq1jsY9Yng9zB7lWq6WRrjTbTOc7knNwccXQiAjQ==}
+    dev: false
+
+  /html-entities/2.3.3:
+    resolution: {integrity: sha512-DV5Ln36z34NNTDgnz0EWGBLZENelNAtkiFA4kyNOG2tDI6Mz1uSWiq1wAKdyjnJwyDiDO7Fa2SO1CTxPXL8VxA==}
     dev: false
 
   /https-proxy-agent/5.0.1:
