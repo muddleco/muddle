@@ -8,16 +8,8 @@
 	import { slide } from 'svelte/transition';
 	import hotkeys from 'hotkeys-js';
 	import { onMount } from 'svelte';
-	import { createEditor } from 'svelte-editorjs';
-	import Header from '@editorjs/header';
-	import List from '@editorjs/list';
 
 	let toggleReply = false;
-
-	const { editor, data, isReady } = createEditor({
-		autofocus: true,
-		tools: { header: Header, list: List }
-	});
 
 	onMount(() => {
 		// TODO: Make it stop at the end of the array
@@ -79,7 +71,7 @@
 		<p class="text-gray-500 mt-4 mx-5">{message.body}</p>
 	{/if}
 	{#if toggleReply === true}
-		<div class="mt-4 border border-gray-200 rounded-sm mx-5 w-3/4" use:editor />
+		<p>Reply box goes here</p>
 	{/if}
 </div>
 

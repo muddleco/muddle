@@ -27,7 +27,7 @@
 		"eslint-plugin-svelte3": "^4.0.0",
 		"postcss": "^8.4.14",
 		"postcss-load-config": "^4.0.1",
-		"prettier": "^2.8.0",
+		"prettier": "^2.8.3",
 		"prettier-plugin-svelte": "^2.8.1",
 		"prisma": "4.8.1",
 		"svelte": "^3.54.0",
@@ -41,9 +41,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@editorjs/editorjs": "^2.26.5",
-		"@editorjs/header": "^2.7.0",
-		"@editorjs/list": "^1.8.0",
 		"@fontsource/inter": "^4.5.15",
 		"@fontsource/lexend": "^4.5.15",
 		"@prisma/client": "4.8.1",
@@ -51,7 +48,6 @@
 		"gmail-api-parse-message": "^2.1.2",
 		"googleapis": "^110.0.0",
 		"hotkeys-js": "^3.10.1",
-		"meilisearch": "^0.31.1",
-		"svelte-editorjs": "^0.1.0"
+		"meilisearch": "^0.31.1"
 	}
 }
