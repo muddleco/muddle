@@ -19,7 +19,7 @@ export async function POST() {
     await prisma.app.create({
         data: {
             type: "SEARCH",
-            key: token,
+            key: {"token": token},
             user: {
                 connect: { id: 1 }
             }
