@@ -5,10 +5,10 @@
 	export let message: any;
 	export let showMessage = false;
 	export let selectedMessage: any;
+	export let update: any;
 	import { slide } from 'svelte/transition';
 	import hotkeys from 'hotkeys-js';
 	import { onMount } from 'svelte';
-	import { invalidate } from '$app/navigation';
 
 	let toggleReply = false;
 
@@ -20,7 +20,7 @@
 		hotkeys('j', () => {
 			selectedMessage = messages[messages.indexOf(selectedMessage) + (1 % messages.length)];
 		}); // down
-		hotkeys('esc', () => {showMessage = false; selectedMessage = null}); // close
+		hotkeys('esc', () => {showMessage = false; selectedMessage = null; update();}); // close
 		hotkeys('enter', () => (toggleReply = true)); // reply
 		hotkeys('e', () => archiveMessage()); // archive
 
@@ -65,15 +65,15 @@
 <div class="relative py-2 h-dynamic" transition:slide>
 	<div class="flex px-5 mb-5">
 		<div class="flex w-3/4">
-			<button on:click={() => {showMessage = false; selectedMessage = null; invalidate("");}} class="mr-2">
+			<button on:click={() => {showMessage = false; selectedMessage = null; update();}} class="mr-2">
 				<Icon icon="tabler:arrow-left" class="h-5 w-5 text-gray-400" />
 			</button>
 			<h1 class="text-2xl font-gray-800">{message.subject}</h1>
 		</div>
 		<div class="w-1/4 space-x-2 flex justify-end">
 			<Button text="Reply" type="secondary" onClick={() => toggleReply = true} />
-			<Button text="Later" type="secondary" onClick={starMessage} />
-			<Button text="Done" onClick={archiveMessage} />
+			<Button text="Later" type="secondary" onClick={async () => {starMessage(); await new Promise(r => setTimeout(r, 3000)); update();}} />
+			<Button text="Done" onClick={async () => {archiveMessage(); await new Promise(r => setTimeout(r, 3000)); update();}} />
 		</div>
 	</div>
 	{#if message.body}

@@ -6,12 +6,10 @@
 	import hotkeys from 'hotkeys-js';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import extractDomainFromEmail from "$lib/utils/domain-parser";
+	import extractDomainFromEmail from '$lib/utils/domain-parser';
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	dayjs.extend(relativeTime);
-
-	export let data: PageData;
 
 	// Search
 	let query = '';
@@ -50,16 +48,38 @@
 		console.log(json.url);
 	};
 
-	// Filter messages in the inbox
-	const messages = data.messages.filter(
-		(message: any) => message.labels && message.labels.includes('INBOX')
-	);
+	let messages = [
+		{
+			id: '1867af4927be0817',
+			historyId: '00000',
+			user: 1,
+			date: 'Wed, 22 Feb 2023 15:08:12 -0600',
+			from: 'Muddle <hello@muddle.co>',
+			labels: ['INBOX'],
+			subject: 'Loading...',
+			snippet: 'Loading...',
+			body: 'Hello'
+		}
+	];
+
+	const update = async () => {
+		const res = await fetch('http://localhost:5173/api/messages');
+		const json = await res.json();
+
+		// Filter messages in the inbox
+		messages = json.messages.filter(
+			(message: any) => message.labels && message.labels.includes('INBOX')
+		);
+	};
 
 	let hoverMessage = messages[-0];
 	let showMessage = false;
 	let selectedMessage: any = null;
 
 	onMount(() => {
+		update();
+
+		// Setup hotkeys
 		hotkeys('enter', () => {
 			if (!selectedMessage) {
 				showMessage = true;
@@ -85,7 +105,7 @@
 <div class="flex h-screen pt-12">
 	<div class="w-3/4 pt-4 overflow-y-scroll">
 		{#if showMessage}
-			<Message {messages} bind:showMessage bind:message={selectedMessage} bind:selectedMessage />
+			<Message {messages} {update} bind:showMessage bind:message={selectedMessage} bind:selectedMessage />
 		{:else if results.length > 0}
 			<Messages bind:messages={results} bind:showMessage bind:hoverMessage bind:selectedMessage />
 		{:else}
@@ -159,7 +179,9 @@
 			</div>
 		</div>
 		<div class="mt-8">
-			{#if hoverMessage.from.split('<')[1] && extractDomainFromEmail(hoverMessage.from.split('<')[1].replace('>', ''))}
+			{#if hoverMessage.from.split('<')[1] && extractDomainFromEmail(hoverMessage.from
+						.split('<')[1]
+						.replace('>', ''))}
 				<div class="flex">
 					<Icon icon="tabler:link" class="h-4 w-4 text-gray-400 mr-2" />
 					<span class="text-sm text-gray-700 -mt-0.5"
@@ -169,6 +191,7 @@
 			{/if}
 		</div>
 		<div class="absolute bottom-5 space-y-2">
+			<button on:click={() => {update();}}>Update</button>
 			{#each messages as message}
 				{#if message.labels.includes('STARRED')}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -185,14 +208,6 @@
 					</div>
 				{/if}
 			{/each}
-			{#if data.events && data.events.length > 0}
-				<div
-					class="bg-white rounded-sm border border-gray-200 text-gray-500 text-sm px-4 py-2 flex"
-				>
-					<Icon icon="tabler:calendar" class="h-4 w-4 text-gray-400 mr-4 mt-0.5" />Your next event
-					is {nextEvent.summary} in {nextEvent.time}
-				</div>
-			{/if}
 		</div>
 	</div>
 </div>
