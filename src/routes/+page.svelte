@@ -6,12 +6,14 @@
 	import hotkeys from 'hotkeys-js';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
+	import extractDomainFromEmail from "$lib/utils/domain-parser";
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	dayjs.extend(relativeTime);
 
 	export let data: PageData;
 
+	// Search
 	let query = '';
 	let results: any = [];
 
@@ -29,6 +31,7 @@
 		query = event.target.value;
 	};
 
+	// Setup functions
 	const token = async () => {
 		const res = await fetch('http://localhost:5173/api/token', { method: 'POST' });
 		const json = await res.json();
@@ -41,6 +44,13 @@
 		console.log(json);
 	};
 
+	const authorize = async () => {
+		const res = await fetch('http://localhost:5173/api/gmail', { method: 'POST' });
+		const json = await res.json();
+		console.log(json.url);
+	};
+
+	// Filter messages in the inbox
 	const messages = data.messages.filter(
 		(message: any) => message.labels && message.labels.includes('INBOX')
 	);
@@ -57,58 +67,6 @@
 			}
 		});
 	});
-
-	const authorize = async () => {
-		const res = await fetch('http://localhost:5173/api/gmail', { method: 'POST' });
-		const json = await res.json();
-		console.log(json.url);
-	};
-
-	let nextEvent = {
-		summary: '',
-		time: ''
-	};
-
-	if (data.events && data.events[0]) {
-		nextEvent.summary = data.events[0].summary;
-		nextEvent.time = dayjs().to(data.events[0].start.dateTime);
-	}
-
-	setInterval(() => {
-		if (data.events && data.events[0] && data.events[0].start) {
-			nextEvent.summary = data.events[0].summary;
-			nextEvent.time = dayjs().to(data.events[0].start.dateTime);
-		}
-	}, 60000);
-
-	const popularEmailDomains = [
-		'gmail.com',
-		'yahoo.com',
-		'hotmail.com',
-		'outlook.com',
-		'aol.com',
-		'icloud.com',
-		'live.com',
-		'comcast.net',
-		'msn.com',
-		'verizon.net',
-		'me.com',
-		'att.net',
-		'mac.com',
-		'mail.com'
-	];
-
-	function extractDomainFromEmail(email: string): string | null {
-		const atIndex = email.indexOf('@');
-		if (atIndex === -1) {
-			return null; // email is invalid
-		}
-		const domain = email.slice(atIndex + 1);
-		if (popularEmailDomains.includes(domain)) {
-			return null; // email domain is a popular consumer email service
-		}
-		return domain; // email domain is not a popular consumer email service
-	}
 </script>
 
 <svelte:head>
