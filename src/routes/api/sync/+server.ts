@@ -12,7 +12,8 @@ const oAuth2Client = new google.auth.OAuth2(
 	`${process.env.BASE_URL}/api/gmail`
 );
 
-export async function POST() {
+export async function POST({url}) {
+	const type = url.searchParams.get("type");
 	// Get user's app key from the database
 	const userId = 1;
 	const app = await prisma.app.findFirst({
@@ -40,7 +41,7 @@ export async function POST() {
 	});
 
 	// Get emails
-	if (existingMessages.hits.length > 0) {
+	if (existingMessages.hits.length > 0 && type === "incremental") {
 		// Use historyId to get new messages
 		console.log("Found existing messages, using historyId to get new messages");
 		const res = await gmail.users.history.list({
@@ -81,7 +82,7 @@ export async function POST() {
 		} else {
 			throw new Error('No messages found');
 		}
-	} else {
+	} else if (type === "full") {
 		console.log("No existing messages, getting all messages");
 		const res = await gmail.users.messages.list({
 			userId: 'me'

@@ -36,8 +36,14 @@
 		console.log(json);
 	};
 
-	const sync = async () => {
-		const res = await fetch('http://localhost:5173/api/sync', { method: 'POST' });
+	const incrementalSync = async () => {
+		const res = await fetch('http://localhost:5173/api/sync?type=incremental', { method: 'POST' });
+		const json = await res.json();
+		console.log(json);
+	};
+
+	const fullSync = async () => {
+		const res = await fetch('http://localhost:5173/api/sync?type=full', { method: 'POST' });
 		const json = await res.json();
 		console.log(json);
 	};
@@ -192,6 +198,8 @@
 		</div>
 		<div class="absolute bottom-5 space-y-2">
 			<button on:click={() => {update();}}>Update</button>
+			<button on:click={() => {incrementalSync();}}>Incremental Sync</button>
+			<button on:click={() => {fullSync();}}>Full Sync</button>
 			{#each messages as message}
 				{#if message.labels.includes('STARRED')}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
