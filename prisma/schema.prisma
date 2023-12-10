@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String?
+  email       String       @unique
+  github      String?
+  company     Company?     @relation(fields: [companyId], references: [id])
+  companyId   String?
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+}
+
+model Company {
+  id          String    @id @default(uuid())
+  name        String?
+  tagline     String?
+  description String?
+  slug        String    @unique
+  github      String?
+  projects    Project[]
+  users       User[]
+  createdAt   DateTime  @default(now())
+}
+
+model Project {
+  id        String   @id @default(uuid())
+  name      String?
+  slug      String   @unique
+  repo      String?
+  bounties  Bounty[]
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?
+  tags      String[]
+  createdAt DateTime @default(now())
+}
+
+model Bounty {
+  id          String       @id @default(uuid())
+  name        String?
+  description String?
+  issue       String?
+  value       Int?
+  type        BountyType   @default(BOUNTY)
+  status      Status       @default(OPEN)
+  project     Project?     @relation(fields: [projectId], references: [id])
+  projectId   String?
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+}
+
+enum BountyType {
+  BOUNTY
+  CHALLENGE
+}
+
+enum Status {
+  OPEN
+  CLOSED
+}
+
+model Submission {
+  id        Int              @id @default(autoincrement())
+  status    SubmissionStatus @default(SUBMITTED)
+  url       String
+  createdAt DateTime         @default(now())
+  bounty    Bounty           @relation(fields: [bountyId], references: [id])
+  bountyId  String
+  user      User             @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
