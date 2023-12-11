@@ -4,6 +4,7 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import Shell from "~/components/Shell";
 import prisma from "~/lib/prisma";
 import { Octokit } from "octokit";
+import { authenticator } from "~/lib/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,11 +14,8 @@ export const meta: MetaFunction = () => {
 };
 
 export const action = async (args) => {
-  // TODO: Add user auth here
-
-  // Lookup the user with the Prisma client
-  const user = await prisma.user.findUnique({
-    where: { email: "bailey@cal.com" },
+  const user = await authenticator.isAuthenticated(args.request, {
+    failureRedirect: "/login",
   });
 
   const formData = await args.request.formData();
@@ -29,7 +27,7 @@ export const action = async (args) => {
       url: url as string,
       bounty: {
         connect: {
-          id: args.params.id,
+          id: args.params.bounty,
         },
       },
       user: {
@@ -48,7 +46,7 @@ export default function Bounty() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Shell heading={"Submit a solution: " + data.bounty?.name}>
+    <Shell heading={"Submit a solution: " + data.bounty?.name} user={data.user}>
       <div className="border border-gray-100 rounded-lg px-7 py-4 text-sm mb-4">
         <h2 className="font-heading text-xl mb-4">
           Automatically link from GitHub
@@ -110,15 +108,12 @@ export default function Bounty() {
 }
 
 export const loader = async (args) => {
-  // TODO: Add user authentication here
+  const user = await authenticator.isAuthenticated(args.request, {
+    failureRedirect: "/login",
+  });
 
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
-  });
-
-  // Lookup the user with the Prisma client
-  const user = await prisma.user.findUnique({
-    where: { email: "bailey@cal.com" },
   });
 
   const bounty = await prisma.bounty.findUnique({
@@ -141,5 +136,5 @@ export const loader = async (args) => {
     (pull) => pull.user?.login === user?.github
   );
 
-  return { bounty, pulls: filteredPulls };
+  return { bounty, pulls: filteredPulls, user };
 };

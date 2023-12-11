@@ -1,7 +1,8 @@
 import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { sha256 } from "js-sha256";
 import Shell from "~/components/Shell";
-import prisma from "~/lib/prisma";
+import { authenticator } from "~/lib/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,11 +15,11 @@ export default function Profile() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Shell heading="Profile">
+    <Shell heading="Profile" user={data.user}>
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="border border-gray-100 border-b-4 rounded-lg px-7 py-8 text-center">
           <img
-            src="https://avatars.githubusercontent.com/u/25907159?v=4"
+            src={"https://gravatar.com/avatar/" + sha256(data.user?.email) + "?d=robohash"}
             alt="Avatar"
             className="w-24 h-24 rounded-full mx-auto mb-4"
           />
@@ -42,9 +43,9 @@ export default function Profile() {
   );
 }
 
-export async function loader() {
-  const user = await prisma.user.findUnique({
-    where: { id: "746faec6-042d-402c-a986-cbdca78ba938" },
+export async function loader({request}) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
   });
 
   return json({ user });

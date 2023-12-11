@@ -2,6 +2,7 @@ import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Project from "~/components/Project";
 import Shell from "~/components/Shell";
+import { authenticator } from "~/lib/auth.server";
 import prisma from "~/lib/prisma";
 
 export const meta: MetaFunction = () => {
@@ -10,6 +11,10 @@ export const meta: MetaFunction = () => {
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
+
+export async function action({ request }) {
+  await authenticator.logout(request, { redirectTo: "/login" });
+}
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
@@ -21,7 +26,7 @@ export default function Index() {
   ];
 
   return (
-    <Shell heading="Dashboard">
+    <Shell heading="Dashboard" user={data.user}>
       <div className="grid grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
           <div
@@ -60,7 +65,11 @@ export default function Index() {
   );
 }
 
-export async function loader() {
+export async function loader({ request }) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+  
   const companies = await prisma.company.findMany({
     include: {
       projects: {
@@ -71,5 +80,5 @@ export async function loader() {
     },
   });
 
-  return json({ companies });
+  return json({ companies, user });
 }

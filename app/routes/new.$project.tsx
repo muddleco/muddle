@@ -12,6 +12,7 @@ import {
 import { Octokit } from "octokit";
 import { useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
+import { authenticator } from "~/lib/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -67,7 +68,7 @@ export default function New() {
   }
 
   return (
-    <Shell heading="Create a new bounty">
+    <Shell heading="Create a new bounty" user={data.user}>
       <div className="px-7 py-5 rounded-lg border border-gray-100">
         <h1 className="font-heading text-xl mb-6">
           Automatically create from GitHub
@@ -327,9 +328,8 @@ export default function New() {
 }
 
 export const loader = async (args) => {
-  // Add authentication user lookup here
-  const user = await prisma.user.findUnique({
-    where: { email: "bailey@cal.com" },
+  const user = await authenticator.isAuthenticated(args.request, {
+    failureRedirect: "/login",
   });
 
   const octokit = new Octokit({

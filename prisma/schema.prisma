@@ -11,6 +11,7 @@ model User {
   id          String       @id @default(uuid())
   name        String?
   email       String       @unique
+  password    String?
   github      String?
   company     Company?     @relation(fields: [companyId], references: [id])
   companyId   String?

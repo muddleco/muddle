@@ -1,4 +1,5 @@
-import { Link, useMatches } from "@remix-run/react";
+import { Form, Link, useMatches } from "@remix-run/react";
+import { sha256 } from "js-sha256";
 
 const navigation = [
   { name: "Dashboard", href: "/" },
@@ -11,7 +12,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Shell({ children, heading }) {
+export default function Shell({ children, heading, user }) {
   const matches = useMatches();
   return (
     <>
@@ -40,11 +41,15 @@ export default function Shell({ children, heading }) {
             ))}
           </nav>
           <div className="inline-flex">
-            <img
-              src="https://avatars.githubusercontent.com/u/25907159?v=4"
-              alt="Avatar"
-              className="w-6 h-6 rounded-full"
-            />
+            <Form method="POST">
+              <button type="submit">
+                <img
+                  src={"https://gravatar.com/avatar/" + sha256(user.email) + "?d=robohash"}
+                  alt="Avatar"
+                  className="w-6 h-6 rounded-full"
+                />
+              </button>
+            </Form>
           </div>
         </div>
       </header>
@@ -65,8 +70,12 @@ export default function Shell({ children, heading }) {
       <div className="my-24 mx-24 text-gray-300 text-xs flex">
         <div>&copy; 2023 Muddle. All rights reserved.</div>
         <div className="ml-auto space-x-4">
-          <Link to="/" className="hover:text-gray-800">Privacy</Link>
-          <Link to="/" className="hover:text-gray-800">Terms</Link>
+          <Link to="/" className="hover:text-gray-800">
+            Privacy
+          </Link>
+          <Link to="/" className="hover:text-gray-800">
+            Terms
+          </Link>
         </div>
       </div>
     </>

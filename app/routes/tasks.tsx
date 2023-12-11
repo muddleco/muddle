@@ -2,6 +2,7 @@ import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Bounty } from "~/components/Project";
 import Shell from "~/components/Shell";
+import { authenticator } from "~/lib/auth.server";
 import prisma from "~/lib/prisma";
 
 export const meta: MetaFunction = () => {
@@ -15,7 +16,7 @@ export default function Tasks() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Shell heading="Tasks">
+    <Shell heading="Tasks" user={data.user}>
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="border border-gray-100 border-b-4 rounded-lg px-7 py-8 text-center items-center flex">
           <div className="w-full">
@@ -42,8 +43,12 @@ export default function Tasks() {
   );
 }
 
-export async function loader() {
+export async function loader({request}) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+  
   const bounties = await prisma.bounty.findMany();
 
-  return json({ bounties });
+  return json({ bounties, user });
 }

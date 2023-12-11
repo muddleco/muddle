@@ -2,6 +2,7 @@ import { json, type MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Bounty } from "~/components/Project";
 import Shell from "~/components/Shell";
+import { authenticator } from "~/lib/auth.server";
 import prisma from "~/lib/prisma";
 
 export const meta: MetaFunction = () => {
@@ -32,7 +33,7 @@ export default function Explore() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Shell heading="Explore">
+    <Shell heading="Explore" user={data.user}>
       <section className="grid grid-cols-2 space-x-4 mb-8">
         {featured.map((project) => (
           <Link to={"/" + project.slug} className="relative group" key={project.name}>
@@ -94,7 +95,11 @@ export default function Explore() {
   );
 }
 
-export async function loader() {
+export async function loader({request}) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+
   const projects = await prisma.project.findMany();
   const tags = projects.flatMap((project) => project.tags);
   const tagCounts = tags.reduce((acc, tag) => {
@@ -114,5 +119,5 @@ export async function loader() {
 
   const companies = await prisma.company.findMany();
 
-  return json({ tags: sortedTags, bounties, companies });
+  return json({ tags: sortedTags, bounties, companies, user });
 }

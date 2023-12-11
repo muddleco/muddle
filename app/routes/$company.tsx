@@ -2,6 +2,7 @@ import { json, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Project from "~/components/Project";
 import Shell from "~/components/Shell";
+import { authenticator } from "~/lib/auth.server";
 import prisma from "~/lib/prisma";
 
 export const meta: MetaFunction = () => {
@@ -18,7 +19,7 @@ export default function Company() {
     data.company?.projects.flatMap((project) => project.tags) || [];
 
   return (
-    <Shell heading={data.company?.name}>
+    <Shell heading={data.company?.name} user={data.user}>
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="col-span-2 border border-gray-100 rounded-lg px-7 py-4 text-sm">
           <p className="font-heading text-lg text-gray-950">
@@ -59,7 +60,11 @@ export default function Company() {
   );
 }
 
-export async function loader({ params }) {
+export async function loader({ params, request }) {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+  
   const company = await prisma.company.findUnique({
     where: {
       slug: params.company,
@@ -73,5 +78,5 @@ export async function loader({ params }) {
     },
   });
 
-  return json({ company });
+  return json({ company, user });
 }
