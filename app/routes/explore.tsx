@@ -18,14 +18,14 @@ const featured = [
     slug: "cal",
     description: "Scheduling infrastructure for absolutely everyone.",
     image:
-      "https://private-user-images.githubusercontent.com/1309312/270596153-d7b86c0f-a755-4476-a022-a608db2c4633.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDIxODEwODAsIm5iZiI6MTcwMjE4MDc4MCwicGF0aCI6Ii8xMzA5MzEyLzI3MDU5NjE1My1kN2I4NmMwZi1hNzU1LTQ0NzYtYTAyMi1hNjA4ZGIyYzQ2MzMucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQUlXTkpZQVg0Q1NWRUg1M0ElMkYyMDIzMTIxMCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyMzEyMTBUMDM1OTQwWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9NzVlMWZkZDVkOTI4YzhhNTZhYWEzNzcwYmFjOTIyM2VhMmFlNzQ1YTE1N2U5MjhjMjZmMGJjZWQwYzBiMzFmMCZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ.VLT1MqEWQt22CPsCEzGoVuTNZKLEhoE40t6LbUhzFDc",
+      "https://github.com/calcom/cal.com/assets/8019099/407e727e-ff19-4ca4-bcae-049dca05cf02",
   },
   {
     name: "Documenso",
     slug: "documenso",
     description: "Enabling everyone to sign documents, everywhere.",
     image:
-      "https://private-user-images.githubusercontent.com/1309312/270596153-d7b86c0f-a755-4476-a022-a608db2c4633.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MDIxODEwODAsIm5iZiI6MTcwMjE4MDc4MCwicGF0aCI6Ii8xMzA5MzEyLzI3MDU5NjE1My1kN2I4NmMwZi1hNzU1LTQ0NzYtYTAyMi1hNjA4ZGIyYzQ2MzMucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQUlXTkpZQVg0Q1NWRUg1M0ElMkYyMDIzMTIxMCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyMzEyMTBUMDM1OTQwWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9NzVlMWZkZDVkOTI4YzhhNTZhYWEzNzcwYmFjOTIyM2VhMmFlNzQ1YTE1N2U5MjhjMjZmMGJjZWQwYzBiMzFmMCZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ.VLT1MqEWQt22CPsCEzGoVuTNZKLEhoE40t6LbUhzFDc",
+      "https://github.com/documenso/documenso/assets/1309312/d7b86c0f-a755-4476-a022-a608db2c4633",
   },
 ];
 
