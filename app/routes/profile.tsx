@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import { sha256 } from "js-sha256";
 import Shell from "~/components/Shell";
 import { authenticator } from "~/lib/auth.server";
+import { getLevel, getLevelName, getRemainingXP } from "~/lib/xp";
 
 export const meta: MetaFunction = () => {
   return [
@@ -19,19 +20,23 @@ export default function Profile() {
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="border border-gray-100 border-b-4 rounded-lg px-7 py-8 text-center">
           <img
-            src={"https://gravatar.com/avatar/" + sha256(data.user?.email) + "?d=robohash"}
+            src={
+              "https://gravatar.com/avatar/" +
+              sha256(data.user?.email) +
+              "?d=robohash"
+            }
             alt="Avatar"
             className="w-24 h-24 rounded-full mx-auto mb-4"
           />
           <h1 className="font-heading text-xl">{data.user?.name}</h1>
-          <p className="text-gray-300 text-sm">PR Wizard</p>
+          <p className="text-gray-300 text-sm">{getLevelName(data.userData?.xp)}</p>
           <div className="my-8">
             <div className="bg-gray-50 border border-gray-100 rounded-full h-3 w-full">
-              <div className="bg-orange-500 rounded-full w-3/4 h-3"></div>
+              <div className="bg-orange-500 rounded-full h-3" style={{width: `${(data.userData?.xp % 100) / 100 * 100}%`}}></div>
             </div>
             <div className="flex mt-2">
-              <p className="text-gray-500 font-medium text-xs">Level 3</p>
-              <p className="text-gray-300 text-xs ml-auto">965 XP remaining</p>
+              <p className="text-gray-500 font-medium text-xs">Level {getLevel(data.userData?.xp)}</p>
+              <p className="text-gray-300 text-xs ml-auto">{getRemainingXP(data.userData?.xp)} XP remaining</p>
             </div>
           </div>
         </div>
@@ -43,10 +48,14 @@ export default function Profile() {
   );
 }
 
-export async function loader({request}) {
+export async function loader({ request }) {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
 
-  return json({ user });
+  const userData = await prisma.user.findUnique({
+    where: { email: user.email },
+  });
+
+  return json({ user, userData });
 }

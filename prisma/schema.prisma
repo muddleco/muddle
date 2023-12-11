@@ -16,6 +16,7 @@ model User {
   company     Company?     @relation(fields: [companyId], references: [id])
   companyId   String?
   submissions Submission[]
+  xp          Int          @default(0)
   createdAt   DateTime     @default(now())
 }
 
