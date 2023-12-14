@@ -21,10 +21,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const action = async (args) => {
-  const formData = await args.request.formData();
+export const action = async ({request, params}) => {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+  
+  const formData = await request.formData();
 
-  const title = formData.get("title");
+  const name = formData.get("name");
   const description = formData.get("description");
   const value = formData.get("reward");
   const github = formData.get("github");
@@ -33,12 +37,12 @@ export const action = async (args) => {
   // Create the bounty
   const bounty = await prisma.bounty.create({
     data: {
-      title,
+      name,
       description,
-      github,
+      issue: github,
       type,
       value: parseInt(value as string),
-      project: { connect: { id: args.params.project || 1 } },
+      project: { connect: { id: params.project || 1 } },
     },
   });
 
@@ -61,9 +65,9 @@ export default function New() {
       toast.success("Bounty created successfully!");
       setToasted(true);
     }
-  }, [data.issues, actionData]);
+  }, [data.issues, actionData, toasted]);
 
-  if (data.user?.projectId === null) {
+  if (data.user?.companyId === null) {
     return <div>Not allowed</div>;
   }
 
@@ -201,7 +205,7 @@ export default function New() {
                 </div>
                 <div className="ml-auto">
                   <Form method="post">
-                    <input type="hidden" name="title" value={issue.title} />
+                    <input type="hidden" name="name" value={issue.title} />
                     <input
                       type="hidden"
                       name="description"
@@ -286,7 +290,7 @@ export default function New() {
             </label>
             <select
               name="type"
-              className="block w-full rounded-md border py-1.5 text-gray-900 shadow-sm outline-none sm:max-w-xs sm:text-sm sm:leading-6"
+              className="block w-full rounded-md border px-4 py-1.5 text-gray-900 shadow-sm outline-none sm:max-w-xs sm:text-sm sm:leading-6"
             >
               <option value="BOUNTY">
                 Bounty (one person works on one task)
@@ -327,8 +331,8 @@ export default function New() {
   );
 }
 
-export const loader = async (args) => {
-  const user = await authenticator.isAuthenticated(args.request, {
+export const loader = async ({request, params}) => {
+  const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
 
@@ -337,12 +341,12 @@ export const loader = async (args) => {
   });
 
   const project = await prisma.project.findUnique({
-    where: { id: args.params.project || 0 },
+    where: { id: params.project || 0 },
     include: { company: true },
   });
 
   const bounties = await prisma.bounty.findMany({
-    where: { projectId: args.params.project || 0 },
+    where: { projectId: params.project || 0 },
     select: { issue: true },
   });
 
@@ -351,7 +355,7 @@ export const loader = async (args) => {
     .map((bounty) => bounty.issue)
     .filter((url) => url);
 
-  const url = new URL(args.request.url);
+  const url = new URL(request.url);
   const page = url.searchParams.get("page");
   const label = url.searchParams.get("label");
 
