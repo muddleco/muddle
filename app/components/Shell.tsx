@@ -16,8 +16,8 @@ export default function Shell({ children, heading, user }) {
   const matches = useMatches();
   return (
     <>
-      <header className="text-gray-900 font-sans">
-        <div className="mx-24 flex py-5 items-center">
+      <header className="text-gray-900 font-sans max-w-screen-xl mx-auto">
+        <div className="flex py-5 items-center">
           <Link
             to="/"
             className="flex font-heading text-xl text-gray-900 mb-4 md:mb-0"
@@ -53,7 +53,7 @@ export default function Shell({ children, heading, user }) {
           </div>
         </div>
       </header>
-      <div className="mx-24 font-sans">
+      <div className="mx-24 font-sans max-w-screen-xl mx-auto">
         <div className="my-8 flex">
           {matches[1].pathname.startsWith("/bounty/") && (
             <Link
@@ -67,7 +67,7 @@ export default function Shell({ children, heading, user }) {
         </div>
         {children}
       </div>
-      <div className="my-24 mx-24 text-gray-300 text-xs flex">
+      <div className="my-24 text-gray-300 text-xs flex max-w-screen-xl mx-auto">
         <div>&copy; 2023 Muddle. All rights reserved.</div>
         <div className="ml-auto space-x-4">
           <Link to="/" className="hover:text-gray-800">
