@@ -27,7 +27,7 @@ export default function Index() {
 
   return (
     <Shell heading="Dashboard" user={data.user}>
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      {/* <div className="grid grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
           <div
             key={stat.name}
@@ -40,7 +40,7 @@ export default function Index() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
       {data.companies.map((company) => (
         <div key={company.id}>
           {company.projects.map((project) => {
