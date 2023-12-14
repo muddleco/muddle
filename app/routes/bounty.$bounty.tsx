@@ -2,6 +2,7 @@ import { json, type MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import Shell from "~/components/Shell";
 import { authenticator } from "~/lib/auth.server";
+import { formatName } from "~/lib/issues";
 import prisma from "~/lib/prisma";
 
 export const meta: MetaFunction = () => {
@@ -15,7 +16,7 @@ export default function Bounty() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Shell heading={data.bounty?.name} user={data.user}>
+    <Shell heading={formatName(data.bounty?.name || "Unknown")} user={data.user}>
       <div className="grid grid-cols-3 gap-x-4">
         <div className="col-span-2 border border-gray-100 rounded-lg px-7 py-4 text-sm">
           {data?.bounty?.submissions &&
