@@ -4,6 +4,10 @@ import Shell from "~/components/Shell";
 import { authenticator } from "~/lib/auth.server";
 import { formatName } from "~/lib/issues";
 import prisma from "~/lib/prisma";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkGithub from "remark-github";
+import removeComments from "remark-remove-comments";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,7 +20,10 @@ export default function Bounty() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Shell heading={formatName(data.bounty?.name || "Unknown")} user={data.user}>
+    <Shell
+      heading={formatName(data.bounty?.name || "Unknown")}
+      user={data.user}
+    >
       <div className="grid grid-cols-3 gap-x-4">
         <div className="col-span-2 border border-gray-100 rounded-lg px-7 py-4 text-sm">
           {data?.bounty?.submissions &&
@@ -47,7 +54,17 @@ export default function Bounty() {
               </div>
             )}
           <h2 className="font-heading text-xl mb-4">Description</h2>
-          <p className="text-gray-500">{data?.bounty?.description}</p>
+          <div className="prose text-gray-500 prose-headings:font-heading prose-headings:text-gray-900 prose-headings:mb-2">
+            <Markdown
+              remarkPlugins={[
+                remarkGfm,
+                removeComments,
+                [remarkGithub, { repository: data.bounty?.project?.company?.github + "/" + data.bounty?.project?.repo }],
+              ]}
+            >
+              {data.bounty?.description}
+            </Markdown>
+          </div>
         </div>
         <div className="space-y-4">
           <div className="bg-gray-50 border border-gray-100 rounded-lg px-7 py-4 text-sm">

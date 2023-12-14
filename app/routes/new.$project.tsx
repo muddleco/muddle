@@ -147,7 +147,7 @@ export default function New() {
               <div role="status">
                 <svg
                   aria-hidden="true"
-                  className="inline w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-orange-600"
+                  className="inline w-16 h-16 text-gray-200 animate-spin dark:text-gray-100 fill-orange-600"
                   viewBox="0 0 100 101"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +161,7 @@ export default function New() {
                     fill="currentFill"
                   />
                 </svg>
-                <span className="block mt-4 font-cal text-gray-900 text-2xl">
+                <span className="block mt-4 font-heading text-gray-900 text-2xl">
                   Fetching issues
                 </span>
               </div>
