@@ -53,12 +53,13 @@ export default function Explore() {
         <h1 className="font-heading text-xl mb-4">Browse by tag</h1>
         <div className="flex space-x-2">
           {data.tags.map((tag) => (
-            <div
+            <Link
+              to={"/tag/" + tag}
               key={tag}
               className="bg-gray-50 border border-gray-100 rounded-lg py-0.5 px-2 text-sm text-gray-950"
             >
               {tag}
-            </div>
+            </Link>
           ))}
         </div>
       </section>

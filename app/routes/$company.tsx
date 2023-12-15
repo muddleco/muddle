@@ -15,8 +15,9 @@ export const meta: MetaFunction = () => {
 export default function Company() {
   const data = useLoaderData<typeof loader>();
 
-  const allTags =
-    data.company?.projects.flatMap((project) => project.tags) || [];
+  const allTags = Array.from(
+    new Set(data.company?.projects.flatMap((project) => project.tags))
+  );
 
   return (
     <Shell heading={data.company?.name} user={data.user}>
