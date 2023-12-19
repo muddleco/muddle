@@ -90,7 +90,11 @@ export async function loader({ request }) {
     include: {
       projects: {
         include: {
-          bounties: true,
+          bounties: {
+            include: {
+              submissions: true,
+            }
+          },
         },
       },
     },

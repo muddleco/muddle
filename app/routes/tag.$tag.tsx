@@ -48,7 +48,11 @@ export async function loader({ request, params }) {
       },
     },
     include: {
-      bounties: true,
+      bounties: {
+        include: {
+          submissions: true,
+        },
+      },
       company: true,
     },
   });

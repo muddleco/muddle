@@ -73,7 +73,11 @@ export async function loader({ params, request }) {
     include: {
       projects: {
         include: {
-          bounties: true,
+          bounties: {
+            include: {
+              submissions: true,
+            }
+          },
         },
       },
     },

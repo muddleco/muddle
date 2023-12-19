@@ -32,6 +32,7 @@ export default function Project({ id, company, project, bounties }) {
                     name={bounty.name}
                     value={bounty.value}
                     description={bounty.description}
+                    submissions={bounty.submissions}
                   />
                 ))}
             </div>
@@ -51,6 +52,7 @@ export default function Project({ id, company, project, bounties }) {
                     name={bounty.name}
                     value={bounty.value}
                     description={bounty.description}
+                    submissions={bounty.submissions}
                   />
                 ))}
             </div>
@@ -61,7 +63,7 @@ export default function Project({ id, company, project, bounties }) {
   );
 }
 
-export function Bounty({ id, name, value, description, fullWidth = false }) {
+export function Bounty({ id, name, value, description, submissions, fullWidth = false }) {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -83,7 +85,7 @@ export function Bounty({ id, name, value, description, fullWidth = false }) {
     <Link
       to={"/bounty/" + id}
       className={
-        "bg-white rounded-lg border border-gray-100 hover:border-gray-200 border-b-4 p-4" +
+        "relative bg-white rounded-lg border border-gray-100 hover:border-gray-200 border-b-4 p-4" +
         (fullWidth ? " w-full" : "")
       }
     >
@@ -91,11 +93,17 @@ export function Bounty({ id, name, value, description, fullWidth = false }) {
         <h3 className="font-medium text-gray-950 mb-1">
           {formatName(name, true)}
         </h3>
-        <span className="ml-auto text-orange-500 mb-1">
+        <span className={"ml-auto mb-1" +
+        (submissions && submissions.length > 0 ? " text-gray-500" : " text-orange-500")}>
           ${numberWithCommas(value)}
         </span>
+        {submissions && submissions.length > 0 && (
+          <span className="absolute bg-gray-100 rounded-tl-lg rounded-br text-gray-500 font-heading text-xs px-3 py-1.5 bottom-0 right-0">
+            Submitted
+          </span>
+        )}
       </div>
-      <p className="text-gray-500 text-xs">{stripAndTruncate(description)}</p>
+      <p className="text-gray-500 text-xs overflow-x-hidden">{stripAndTruncate(description)}</p>
     </Link>
   );
 }
