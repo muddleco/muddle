@@ -27,6 +27,11 @@ export default function Tasks() {
           </div>
         </div>
         <div className="col-span-2 space-y-4 flex flex-wrap border border-gray-100 border-b-4 rounded-lg px-7 py-4">
+          {!data.bounties.length && (
+            <div className="w-full text-center pt-9">
+              <p className="text-gray-500">No bounties in progress.</p>
+            </div>
+          )}
           {data.bounties.slice(0, 6).map((bounty) => (
             <Bounty
               key={bounty.id}
@@ -43,12 +48,20 @@ export default function Tasks() {
   );
 }
 
-export async function loader({request}) {
+export async function loader({ request }) {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
-  
-  const bounties = await prisma.bounty.findMany();
+
+  const bounties = await prisma.bounty.findMany({
+    where: {
+      assignees: {
+        some: {
+          id: user?.id,
+        },
+      },
+    },
+  });
 
   return json({ bounties, user });
 }
