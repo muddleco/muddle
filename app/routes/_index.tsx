@@ -72,6 +72,7 @@ export default function Index() {
                 bounties={project.bounties.filter(
                   (bounty) => bounty.type === "BOUNTY"
                 )}
+                admin={data.user?.companyId === company.id}
               />
             );
           })}

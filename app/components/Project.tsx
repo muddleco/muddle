@@ -1,7 +1,13 @@
 import { Link } from "@remix-run/react";
 import { formatName } from "~/lib/issues";
 
-export default function Project({ id, company, project, bounties }) {
+export default function Project({
+  id,
+  company,
+  project,
+  bounties,
+  admin = false,
+}) {
   return (
     <>
       <div className="bg-gray-50 border border-gray-100 rounded-lg px-7 py-4 mb-4">
@@ -9,12 +15,14 @@ export default function Project({ id, company, project, bounties }) {
           <h1 className="font-heading text-xl mb-6">
             {company} <span className="text-gray-300">/ {project}</span>
           </h1>
-          <Link
-            className="text-xs text-gray-500 ml-auto mt-1"
-            to={"/new/" + id}
-          >
-            New bounty
-          </Link>
+          {admin && (
+            <Link
+              className="text-xs text-gray-500 ml-auto mt-1"
+              to={"/new/" + id}
+            >
+              New bounty
+            </Link>
+          )}
         </div>
         {bounties.filter((bounty) => bounty.type === "CHALLENGE").length >
           0 && (
@@ -65,7 +73,15 @@ export default function Project({ id, company, project, bounties }) {
   );
 }
 
-export function Bounty({ id, name, value, description, submissions, assignees, fullWidth = false }) {
+export function Bounty({
+  id,
+  name,
+  value,
+  description,
+  submissions,
+  assignees,
+  fullWidth = false,
+}) {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -95,8 +111,14 @@ export function Bounty({ id, name, value, description, submissions, assignees, f
         <h3 className="font-medium text-gray-950 mb-1">
           {formatName(name, true)}
         </h3>
-        <span className={"ml-auto mb-1" +
-        (submissions && submissions.length > 0 ? " text-gray-500" : " text-orange-500")}>
+        <span
+          className={
+            "ml-auto mb-1" +
+            (submissions && submissions.length > 0
+              ? " text-gray-500"
+              : " text-orange-500")
+          }
+        >
           ${numberWithCommas(value)}
         </span>
         {submissions && submissions.length > 0 && (
@@ -110,7 +132,9 @@ export function Bounty({ id, name, value, description, submissions, assignees, f
           </span>
         )}
       </div>
-      <p className="text-gray-500 text-xs overflow-x-hidden">{stripAndTruncate(description)}</p>
+      <p className="text-gray-500 text-xs overflow-x-hidden">
+        {stripAndTruncate(description)}
+      </p>
     </Link>
   );
 }

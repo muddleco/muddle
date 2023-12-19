@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import Shell from "~/components/Shell";
 import prisma from "~/lib/prisma";
 import {
@@ -21,11 +21,11 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const action = async ({request, params}) => {
+export const action = async ({ request, params }) => {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
-  
+
   const formData = await request.formData();
 
   const name = formData.get("name");
@@ -331,10 +331,14 @@ export default function New() {
   );
 }
 
-export const loader = async ({request, params}) => {
+export const loader = async ({ request, params }) => {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
+
+  if (user?.companyId === null) {
+    return redirect("/");
+  }
 
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
