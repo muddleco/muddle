@@ -51,9 +51,9 @@ export default function Bounty() {
         <h2 className="font-heading text-xl mb-4">
           Automatically link from GitHub
         </h2>
-        <div className="rounded-lg border border-gray-100 text-gray-900 text-sm shadow-sm">
+        <div className="rounded-lg border border-gray-100 text-gray-900 text-sm">
           {data.pulls?.length === 0 && (
-            <div className="px-4 p-3 border-b text-gray-500">
+            <div className="px-4 p-3 text-gray-500">
               <span className="font-medium text-gray-950">
                 We couldn&apos;t find any PRs made by you.
               </span>{" "}
@@ -66,7 +66,7 @@ export default function Bounty() {
               <div className="ml-auto">
                 <Form method="post">
                   <input type="hidden" name="url" value={pull.html_url} />
-                  <button className="mt-0.5 rounded-md bg-orange-500 px-2 py-1 text-xs font-medium text-white shadow-sm hover:bg-orange-500 focus-visible:outline">
+                  <button className="mt-0.5 rounded-md bg-orange-500 px-2 py-1 text-xs font-medium text-white hover:bg-orange-500 focus-visible:outline">
                     Submit this PR
                   </button>
                 </Form>
