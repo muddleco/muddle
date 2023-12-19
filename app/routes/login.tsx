@@ -1,29 +1,58 @@
 // app/routes/login.tsx
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { Form, Link } from "@remix-run/react";
 import { authenticator } from "~/lib/auth.server";
 
-// First we create our UI with the form doing a POST and the inputs with the
-// names we are going to use in the strategy
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Muddle" },
+    { name: "description", content: "Welcome to Remix!" },
+  ];
+};
+
 export default function Login() {
   return (
-    <div className="max-w-sm mx-auto mt-24">
-      <h1 className="font-heading text-xl mb-4 text-center">Sign into your account</h1>
-      <Form method="post">
-        <input type="email" name="email" className="block w-full border border-gray-100 rounded-lg focus:outline-orange-500 px-2 py-1" placeholder="john@example.com" required />
-        <input
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          className="mt-2 block w-full border border-gray-100 rounded-lg focus:outline-orange-500 px-2 py-1"
-          placeholder="Password"
-          required
-        />
-        <button className="mt-4 w-full rounded-md bg-orange-500 px-2 py-2 text-xs font-medium text-white shadow-sm hover:bg-orange-500 focus-visible:outline">
-          Sign In
-        </button>
-      </Form>
-    </div>
+    <>
+      <div className="max-w-sm mx-auto mt-24 border border-gray-100 rounded-lg p-8 bg-gray-50">
+        <div className="text-center mb-4">
+          <Link to="/" className="font-heading text-xl text-gray-900">
+            muddle
+          </Link>
+        </div>
+        <h1 className="font-heading text-xl mb-8 text-center">
+          Sign into your account
+        </h1>
+        <Form method="post">
+          <input
+            type="email"
+            name="email"
+            className="block w-full border border-gray-100 rounded-lg focus:outline-orange-500 px-2 py-1 text-sm"
+            placeholder="john@example.com"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            className="mt-2 block w-full border border-gray-100 rounded-lg focus:outline-orange-500 px-2 py-1 text-sm"
+            placeholder="••••••••"
+            required
+          />
+          <button className="mt-4 w-full rounded-md bg-orange-500 px-2 py-2 text-xs font-medium text-white shadow-sm hover:bg-orange-500 focus-visible:outline">
+            Sign In
+          </button>
+        </Form>
+      </div>
+      <p className="mt-8 text-center text-sm text-gray-300">
+        Don&apos;t have an account?{" "}
+        <Link
+          to="/signup"
+          className="text-orange-500 hover:text-orange-700 font-medium"
+        >
+          Sign up
+        </Link>
+      </p>
+    </>
   );
 }
 
