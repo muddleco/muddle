@@ -88,6 +88,8 @@ export default function Explore() {
               name={bounty.name}
               value={bounty.value}
               description={bounty.description}
+              submissions={bounty.submissions}
+              assignees={bounty.assignees}
             />
           ))}
         </div>
@@ -116,6 +118,10 @@ export async function loader({request}) {
     orderBy: {
       value: "desc",
     },
+    include: {
+      submissions: true,
+      assignees: true,
+    }
   });
 
   const companies = await prisma.company.findMany();

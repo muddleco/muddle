@@ -33,6 +33,7 @@ export default function Project({ id, company, project, bounties }) {
                     value={bounty.value}
                     description={bounty.description}
                     submissions={bounty.submissions}
+                    assignees={bounty.assignees}
                   />
                 ))}
             </div>
@@ -53,6 +54,7 @@ export default function Project({ id, company, project, bounties }) {
                     value={bounty.value}
                     description={bounty.description}
                     submissions={bounty.submissions}
+                    assignees={bounty.assignees}
                   />
                 ))}
             </div>
@@ -63,7 +65,7 @@ export default function Project({ id, company, project, bounties }) {
   );
 }
 
-export function Bounty({ id, name, value, description, submissions, fullWidth = false }) {
+export function Bounty({ id, name, value, description, submissions, assignees, fullWidth = false }) {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -100,6 +102,11 @@ export function Bounty({ id, name, value, description, submissions, fullWidth = 
         {submissions && submissions.length > 0 && (
           <span className="absolute bg-gray-100 rounded-tl-lg rounded-br text-gray-500 font-heading text-xs px-3 py-1.5 bottom-0 right-0">
             Submitted
+          </span>
+        )}
+        {assignees.length > 0 && submissions && submissions.length === 0 && (
+          <span className="absolute bg-gray-50 rounded-tl-lg rounded-br text-gray-300 font-heading text-xs px-3 py-1.5 bottom-0 right-0">
+            {assignees.length} person working on this
           </span>
         )}
       </div>

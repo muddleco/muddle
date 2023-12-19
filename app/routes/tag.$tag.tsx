@@ -51,6 +51,7 @@ export async function loader({ request, params }) {
       bounties: {
         include: {
           submissions: true,
+          assignees: true,
         },
       },
       company: true,
