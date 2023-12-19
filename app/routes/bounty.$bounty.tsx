@@ -1,5 +1,5 @@
 import { json, type MetaFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import Shell from "~/components/Shell";
 import { authenticator } from "~/lib/auth.server";
 import { formatName } from "~/lib/issues";
@@ -8,6 +8,8 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkGithub from "remark-github";
 import removeComments from "remark-remove-comments";
+import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,8 +18,73 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export async function action({ request }) {
+  const form = await request.formData();
+
+  const bounty = form.get("bounty");
+
+  if (request.method === "PATCH") {
+    const authenticatedUser = await authenticator.isAuthenticated(request, {
+      failureRedirect: "/login",
+    });
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: authenticatedUser.id,
+      },
+      include: {
+        assigned: true,
+      },
+    });
+
+    if (
+      user?.assigned &&
+      user.assigned.some((assignedBounty) => assignedBounty.id === bounty)
+    ) {
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          assigned: {
+            disconnect: {
+              id: bounty,
+            },
+          },
+        },
+      });
+
+      return json({ message: "disconnected" });
+    } else {
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          assigned: {
+            connect: {
+              id: bounty,
+            },
+          },
+        },
+      });
+
+      return json({ message: "connected" });
+    }
+  }
+}
+
 export default function Bounty() {
   const data = useLoaderData<typeof loader>();
+  const action = useActionData<typeof action>();
+
+  useEffect(() => {
+    if (action?.message === "connected") {
+      toast.success("Bounty marked as in progress");
+    } else if (action?.message === "disconnected") {
+      toast.success("Bounty successfully unassigned");
+    }
+  }, [action]);
 
   return (
     <Shell
@@ -90,9 +157,11 @@ export default function Bounty() {
             <p className="text-gray-500 mb-8">
               This bounty is imported from the{" "}
               <span className="text-gray-900 font-medium">
-                {data.bounty?.project?.company?.github + "/" + data.bounty?.project?.repo}
-              </span>
-              {" "}repository.
+                {data.bounty?.project?.company?.github +
+                  "/" +
+                  data.bounty?.project?.repo}
+              </span>{" "}
+              repository.
             </p>
             <div className="flex">
               <a
@@ -106,7 +175,57 @@ export default function Bounty() {
             </div>
           </div>
           <div className="bg-gray-50 border border-gray-100 rounded-lg px-7 py-4 text-sm">
-            <h2 className="font-heading text-xl mb-2">Submit</h2>
+            {!data.bounty?.assignees.some(
+              (user) => user.id === data.user?.id
+            ) ? (
+              <>
+                <h2 className="font-heading text-xl mb-2">
+                  Interested in working on this?
+                </h2>
+                <p className="text-gray-500 mb-8">
+                  Mark it as in progress and it will show up on the{" "}
+                  <span className="text-gray-900 font-medium">My Tasks</span>{" "}
+                  page.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="font-heading text-xl mb-2">
+                  You&apos;re working on this bounty
+                </h2>
+                <p className="text-gray-500 mb-8">
+                  You can see this bounty on the{" "}
+                  <span className="text-gray-900 font-medium">My Tasks</span>{" "}
+                  page. You can unassign yourself if you want to stop working on
+                  this.
+                </p>
+              </>
+            )}
+            <div className="flex">
+              <Form method="patch" className="w-full">
+                <input type="hidden" name="bounty" value={data.bounty?.id} />
+                {!data.bounty?.assignees.some(
+                  (user) => user.id === data.user?.id
+                ) ? (
+                  <button
+                    className="w-full text-center bg-white hover:bg-gray-50 text-gray-900 border border-gray-100 font-medium rounded-lg px-4 py-2 text-xs"
+                    type="submit"
+                  >
+                    Mark as in progress
+                  </button>
+                ) : (
+                  <button
+                    className="w-full text-center bg-white hover:bg-gray-50 text-gray-900 border border-gray-100 font-medium rounded-lg px-4 py-2 text-xs"
+                    type="submit"
+                  >
+                    Stop working on this bounty
+                  </button>
+                )}
+              </Form>
+            </div>
+          </div>
+          <div className="bg-gray-50 border border-gray-100 rounded-lg px-7 py-4 text-sm">
+            <h2 className="font-heading text-xl mb-2">Ready to submit?</h2>
             <p className="font-medium text-gray-700 mb-4">
               If you&apos;re ready to submit your attempt at this bounty, please
               make sure the following is completed:
@@ -130,6 +249,7 @@ export default function Bounty() {
           </div>
         </div>
       </div>
+      <Toaster />
     </Shell>
   );
 }
@@ -144,6 +264,7 @@ export async function loader({ params, request }) {
       id: params.bounty,
     },
     include: {
+      assignees: true,
       submissions: true,
       project: {
         include: {
