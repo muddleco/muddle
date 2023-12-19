@@ -1,5 +1,5 @@
 import { json, type MetaFunction } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData, useRevalidator } from "@remix-run/react";
 import Shell from "~/components/Shell";
 import { authenticator } from "~/lib/auth.server";
 import { formatName } from "~/lib/issues";
@@ -77,12 +77,15 @@ export async function action({ request }) {
 export default function Bounty() {
   const data = useLoaderData<typeof loader>();
   const action = useActionData<typeof action>();
+  const revalidator = useRevalidator();
 
   useEffect(() => {
     if (action?.message === "connected") {
       toast.success("Bounty marked as in progress");
+      revalidator.revalidate();
     } else if (action?.message === "disconnected") {
       toast.success("Bounty successfully unassigned");
+      revalidator.revalidate();
     }
   }, [action]);
 
