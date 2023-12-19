@@ -27,6 +27,22 @@ export default function Index() {
 
   return (
     <Shell heading="Dashboard" user={data.user}>
+      <div className="flex mb-8 bg-orange-400 text-white border border-orange-800 rounded-lg px-8 py-4 text-sm">
+        <div className="w-1/2 pt-4">
+          <h1 className="font-heading text-3xl">
+            Start hacking and earning rewards
+          </h1>
+          <p className="text-orange-100">
+            We&apos;re stoked to have you join the Muddle community! You can get
+            started by completing your profile, then you can view all open
+            bounties on this page or head to the explore page to discover
+            something specific.
+          </p>
+        </div>
+        <div className="ml-auto">
+          <img src="/illustrations/card.svg" alt="Card" className="w-32 h-32" />
+        </div>
+      </div>
       {/* <div className="grid grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
           <div
@@ -69,7 +85,7 @@ export async function loader({ request }) {
   const user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
-  
+
   const companies = await prisma.company.findMany({
     include: {
       projects: {
