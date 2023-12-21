@@ -71,7 +71,7 @@ enum Status {
 }
 
 model Submission {
-  id        Int              @id @default(autoincrement())
+  id        String           @id @default(uuid())
   status    SubmissionStatus @default(SUBMITTED)
   url       String
   createdAt DateTime         @default(now())

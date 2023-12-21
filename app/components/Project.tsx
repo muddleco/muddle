@@ -16,12 +16,17 @@ export default function Project({
             {company} <span className="text-gray-300">/ {project}</span>
           </h1>
           {admin && (
-            <Link
-              className="text-xs text-gray-500 ml-auto mt-1"
-              to={"/new/" + id}
-            >
-              New bounty
-            </Link>
+            <div className="ml-auto mt-1 space-x-8">
+              <Link className="text-xs text-gray-500" to="/review">
+                Review submissions
+              </Link>
+              <Link
+                className="text-xs text-gray-500 ml-auto"
+                to={"/new/" + id}
+              >
+                New bounty
+              </Link>
+            </div>
           )}
         </div>
         {bounties.filter((bounty) => bounty.type === "CHALLENGE").length >
