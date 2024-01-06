@@ -130,7 +130,7 @@ export default function Profile() {
                 className="border border-gray-100 rounded-lg px-3 py-1 text-gray-500 w-full outline-orange-500"
               />
             </div>
-            <div className="col-span-2 mt-12">
+            <div className="col-span-2">
               <button
                 type="submit"
                 className="w-full text-center bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg px-4 py-2 text-xs"

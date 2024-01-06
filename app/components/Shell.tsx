@@ -6,6 +6,7 @@ const navigation = [
   { name: "Explore", href: "/explore" },
   { name: "My Tasks", href: "/tasks" },
   { name: "Profile", href: "/profile" },
+  { name: "Admin", href: "/admin", admin: true },
 ];
 
 function classNames(...classes) {
@@ -26,18 +27,20 @@ export default function Shell({ children, heading, user }) {
           </Link>
           <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center justify-center text-xs">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={classNames(
-                  matches[1].pathname === item.href
-                    ? "bg-gray-100"
-                    : "hover:bg-gray-100",
-                  "mr-5 hover:text-gray-900 rounded-lg px-3 py-2"
-                )}
-              >
-                {item.name}
-              </Link>
+              (item.admin && user.companyId) || !item.admin ? (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={classNames(
+                    matches[1].pathname === item.href
+                      ? "bg-gray-100"
+                      : "hover:bg-gray-100",
+                    "mr-5 hover:text-gray-900 rounded-lg px-3 py-2"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ) : null
             ))}
           </nav>
           <div className="inline-flex">
