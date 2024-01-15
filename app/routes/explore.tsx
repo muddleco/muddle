@@ -42,7 +42,7 @@ export default function Explore() {
               src={project.image}
               alt={project.name}
             />
-            <div className="absolute bottom-0 bg-white group-hover:bg-gray-50 w-full px-4 py-2 rounded-b-lg border border-gray-100 group-hover:border-gray-200">
+            <div className="absolute bottom-0 bg-white w-full px-4 py-3 rounded-b-lg border border-gray-100 group-hover:border-gray-200 border-b-4">
               <h1 className="font-heading text-lg">{project.name}</h1>
               <p className="text-gray-500 text-xs">{project.description}</p>
             </div>

@@ -21,7 +21,7 @@ export default function Tasks() {
         <div className="border border-gray-100 border-b-4 rounded-lg px-7 py-8 text-center items-center flex">
           <div className="w-full">
             <h2 className="font-medium text-3xl text-gray-950 mb-2">
-              {data.bounties.length}
+              {data.bounties.length || 0}
             </h2>
             <p className="text-gray-500">Bounties in progress</p>
           </div>
@@ -39,6 +39,8 @@ export default function Tasks() {
               name={bounty.name}
               value={bounty.value}
               description={bounty.description}
+              submissions={bounty.submissions}
+              assignees={bounty.assignees}
               fullWidth={true}
             />
           ))}
@@ -61,6 +63,10 @@ export async function loader({ request }) {
         },
       },
     },
+    include: {
+      submissions: true,
+      assignees: true,
+    }
   });
 
   return json({ bounties, user });
