@@ -20,15 +20,19 @@ export default function Project({
               <Link className="text-xs text-gray-500" to="/review">
                 Review submissions
               </Link>
-              <Link
-                className="text-xs text-gray-500 ml-auto"
-                to={"/new/" + id}
-              >
+              <Link className="text-xs text-gray-500 ml-auto" to={"/new/" + id}>
                 New bounty
               </Link>
             </div>
           )}
         </div>
+        {!bounties.length && (
+          <div className="text-gray-500 text-center my-4">
+            <img className="w-64 mx-auto mb-4" src="/bounty.svg" alt="Bounty" />
+            <p className="text-gray-900 font-medium">No more bounties!</p>
+            <p className="text-gray-500 text-sm">The project {project} has ran out of bounties. Check back later!</p>
+          </div>
+        )}
         {bounties.filter((bounty) => bounty.type === "CHALLENGE").length >
           0 && (
           <>
